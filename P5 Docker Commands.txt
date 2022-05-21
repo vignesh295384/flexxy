@@ -1,0 +1,135 @@
+a) Installing Packages
+
+docker build -t dockerpackage .
+docker run -it --name dpcont dockerpackage
+
+b) Volumes
+
+docker run -it --name phpcontainer php /bin/bash
+
+Anonymous Volumes:
+
+docker run -it -v /data --name phpcontainer31 php /bin/bash
+
+Named Volumes:
+
+docker run -it -v PHPFolder:/data --name phpcontainer11 php /bin/bash
+
+Host Volumes:-
+
+docker run -it -v C:\Raina\MSA\PracticalsRaina\VS\DockerVolume:/data --name phpcontainer21 php /bin/bash
+
+Reusing Volumes:
+
+docker run -it -v <Volume Name/id>:/data --name phpcontainer4 php /bin/bash
+
+c) Docker Networks
+
+I) Bridge Network
+
+
+A) Working with Default bridge network
+
+docker network ls
+brctl show
+docker run -dt --name ubuntucont1 ubuntu
+docker run -dt --name ubuntucont2 ubuntu
+docker ps
+docker inspect bridge
+docker exec -it ubuntucontainer1 /bin/bash
+root@ac1ac9b21a54:/# apt-get -y update
+root@ac1ac9b21a54:/# apt-get install iputils-ping
+root@ac1ac9b21a54:/# ping -c 4 172.17.0.3
+root@ac1ac9b21a54:/# ping -c 4 facebook.com
+
+B) Creating custom bridge network
+
+docker network create MyNetwork
+docker network ls
+docker run -dt --network MyNetwork --name ubuntucontainer3 ubuntu
+docker run -dt --network MyNetwork --name ubuntucontainer4 ubuntu
+docker inspect MyNetwork
+docker exec -it ubuntucontainer4 /bin/bash
+root@3827fdec21f3:/# apt-get -y update
+root@3827fdec21f3:/# apt-get install iputils-ping
+root@3827fdec21f3:/# ping -c5 172.19.0.2
+root@3827fdec21f3:/# ping -c5 www.google.com
+
+C) Creating custom bridge network with custom network information
+
+docker network create --driver bridge --subnet 10.5.0.0/16 --gateway 10.5.0.10 MyCustomNetwork
+docker network ls
+docker run -dt --network MyCustomNetwork --name ubuntucontainer5 ubuntu
+docker run -dt --network MyCustomNetwork --name ubuntucontainer6 ubuntu
+docker inspect MyCustomNetwork
+docker exec -it ubuntucontainer5 /bin/bash
+root@f518a4657ed5:/# apt-get -y update
+root@f518a4657ed5:/# apt-get install iputils-ping
+root@f518a4657ed5:/# ping -c 6 10.5.0.2
+root@f518a4657ed5:/# ping -c 4 www.gmail.com
+
+II) Host Network
+
+docker run -dt -p 8500:80 --network host --name nginxcontainer nginx
+docker inspect host
+
+III) None Network
+
+docker run -dt --network none --name ubuntucontainer7 ubuntu
+docker inspect none
+docker exec -it ubuntucontainer7 /bin/bash
+root@03ebf7def9df:/# apt-get -y update                                                (Will not work)
+
+IV) Overlay Network (Docker Swarm)
+
+Manager node:-
+docker swarm init --advertise-addr 192.168.0.13
+docker network ls
+docker network create --driver overlay MyOverlayNet
+docker service create --network MyOverlayNet --name MyService --replicas 3 -p 9000:80 nginx
+docker service ls
+docker service ps MyService
+docker service scale MyService=7
+docker service ps MyService
+docker inspect MyOverlayNet
+docker exec -it MyService.3.yh640x2btf2aber5yo7nfcpb4 /bin/bash
+root@f518a4657ed5:/# apt-get -y update
+root@f518a4657ed5:/# apt-get install iputils-ping
+root@f518a4657ed5:/# ping -c 4 10.0.1.7
+root@f518a4657ed5:/# ping -c 4 www.gmail.com
+
+Worker Node:-
+docker swarm join --token SWMTKN-1-53pzmukg52kskva1k4j995rr4n7i41q1viz2qeqa6k1iqgl6gg-43mq89xpoc00sj875qyxc037q 192.168.0.13:2377
+docker inspect MyOverlayNet
+
+V) MacVLAN Network 
+
+172.18.0.71/16
+
+docker network create -d macvlan \
+    --subnet=172.18.0.0/16 \
+    --gateway=172.18.0.1  \
+    -o parent=eth1 \
+     macvlan1
+
+docker run --rm -itd \
+--network=macvlan1 \
+--ip=172.18.0.5 \
+  alpine:latest \
+  /bin/sh
+
+docker run --rm -itd \
+--network=macvlan1 \
+  alpine:latest \
+  /bin/sh
+
+docker exec -it c87d6950be72 ping 172.18.0.5 -c 4
+
+docker exec -it cf09f984d005 ping 172.18.0.2 -c 4
+
+
+
+
+
+
+

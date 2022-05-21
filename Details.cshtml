@@ -1,0 +1,36 @@
+@model BookStoreSDK.Models.Book;
+
+@{
+    ViewData["Title"] = "Book Store Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Book Details</h1>
+    
+    <table>
+    <tr>
+    <td>@Html.DisplayNameFor(model => model.ID)</td>
+    <td>@Html.DisplayFor(model => model.ID)</td>
+    </tr>
+    <tr>
+    <td>@Html.DisplayNameFor(model => model.Title)</td>
+    <td>@Html.DisplayFor(model => model.Title)</td>
+    </tr>
+    <tr>
+    <td>@Html.DisplayNameFor(model => model.Genre)</td>
+    <td>@Html.DisplayFor(model => model.Genre)</td>
+    </tr>
+    <tr>
+    <td>@Html.DisplayNameFor(model => model.Authors)</td>
+    <td>@Html.DisplayFor(model => model.Authors)</td>
+    </tr>
+    <tr>
+    <td>@Html.DisplayNameFor(model => model.Price)</td>
+    <td>@Html.DisplayFor(model => model.Price)</td>
+    </tr>
+    <tr>
+    <td>@Html.DisplayNameFor(model => model.PublishDate)</td>
+    <td>@Html.DisplayFor(model => model.PublishDate)</td>
+    </tr>
+    </table>
+</div>
